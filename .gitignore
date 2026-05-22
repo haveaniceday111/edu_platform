@@ -1,32 +1,27 @@
-# Python
-__pycache__/
+# Django
 *.pyc
 *.pyo
 *.pyd
-*.so
-.Python
-*.so
-*.egg-info/
-dist/
-build/
-
-# Django
+__pycache__/
 db.sqlite3
 *.sqlite3
-*.log
 
 # Environment
 .env
 .env.local
-.env.*.local
+.env.production
 
-# Media files
+# Media
 media/
+!media/.gitkeep
 
-# Static files
+# Static
 staticfiles/
-*.pyc
-*.pyc
+
+# Virtual environment
+venv/
+.env/
+.venv/
 
 # IDE
 .vscode/
@@ -39,19 +34,9 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
-# Virtualenv
-venv/
-env/
-ENV/
-
 # Logs
+logs/
 *.log
 
-# Deployment
-*.swp
-*.swo
-*~
-
-# OS files
-.DS_Store
-Thumbs.db
+# Render
+.render/
