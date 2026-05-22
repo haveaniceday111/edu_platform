@@ -1,2 +1,2 @@
-web: gunicorn edu_platform.wsgi --log-file -
-release: python edu_platform/manage.py migrate
+web: cd edu_platform && gunicorn edu_platform.wsgi --log-file -
+release: cd edu_platform && python manage.py migrate --noinput
