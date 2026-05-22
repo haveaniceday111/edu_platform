@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}会议记录 - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>会议记录</h2>
+    {% if user.role == 'teacher' or user.role == 'admin' %}
+    <a href="{% url 'meeting_record_create' %}" class="btn btn-success">创建会议记录</a>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for record in records %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">{{ record.title }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ record.content|truncatewords:50 }}</p>
+                <div class="text-muted small">
+                    <p><strong>会议时间：</strong>{{ record.meeting_date|date:"Y-m-d H:i" }}</p>
+                    <p><strong>记录人：</strong>{{ record.recorder.username }} ({{ record.recorder.get_role_display }})</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#meetingModal{{ record.id }}">
+                    查看详情
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 会议详情模态框 -->
+    <div class="modal fade" id="meetingModal{{ record.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ record.title }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="meeting-content" style="white-space: pre-wrap;">{{ record.content }}</div>
+                    <hr>
+                    <div class="text-muted">
+                        <p><strong>会议时间：</strong>{{ record.meeting_date|date:"Y-m-d H:i" }}</p>
+                        <p><strong>记录人：</strong>{{ record.recorder.username }} ({{ record.recorder.get_role_display }})</p>
+                        <p><strong>创建时间：</strong>{{ record.created_at|date:"Y-m-d H:i" }}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            暂无会议记录。
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

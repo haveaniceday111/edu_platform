@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心晴研究所 - 注册</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-image: linear-gradient(rgba(40, 167, 107, 0.85), rgba(40, 167, 107, 0.85)),
+                              url("{% static 'images/login-bg.png' %}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 22px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .register-box {
+            background: white;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 420px;
+            color: #333;
+        }
+
+        .register-box h2 {
+            color: #28a76b;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 13px;
+            background-color: #28a76b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-register:hover {
+            background-color: #21965f;
+        }
+
+        .link-login {
+            display: block;
+            margin-top: 20px;
+            color: #28a76b;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title">心晴研究所</div>
+    <div class="subtitle">携手共筑生命健康</div>
+
+    <div class="register-box">
+        <h2>账号注册</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="请输入账号" class="form-input" required>
+            <input type="email" name="email" placeholder="请输入邮箱" class="form-input" required>
+            <input type="password" name="password1" placeholder="请输入密码" class="form-input" required>
+            <input type="password" name="password2" placeholder="请再次输入密码" class="form-input" required>
+            <select name="role" class="form-input" required>
+                <option value="student">学生</option>
+                <option value="teacher">教师</option>
+                <option value="assistant">助教</option>
+            </select>
+            <button type="submit" class="btn-register">注册</button>
+        </form>
+        <a href="{% url 'login' %}" class="link-login">已有账号？去登录</a>
+    </div>
+</body>
+</html>

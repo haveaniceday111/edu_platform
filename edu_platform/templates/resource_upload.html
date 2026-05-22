@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}心晴研究所-上传课程资源{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        {% if current_chapter %}
+                            为课时【{{ current_chapter.title }}】上传资源
+                        {% else %}
+                            上传课程资源
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- 表单字段 -->
+                        <div class="mb-3">
+                            <label for="{{ form.chapter.id_for_label }}" class="form-label">所属课时 <span class="text-danger">*</span></label>
+                            {{ form.chapter }}
+                            {% if form.chapter.errors %}
+                                <div class="text-danger">{{ form.chapter.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">资源名称 <span class="text-danger">*</span></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.resource_type.id_for_label }}" class="form-label">资源类型 <span class="text-danger">*</span></label>
+                            {{ form.resource_type }}
+                            {% if form.resource_type.errors %}
+                                <div class="text-danger">{{ form.resource_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3" id="file-field">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">上传文件 <span class="text-danger">*</span></label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger">{{ form.file.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">支持上传PDF、PPT、ZIP、EXE等格式，单个文件不超过100MB</div>
+                        </div>
+
+                        <div class="mb-3" id="link-field" style="display: none;">
+                            <label for="{{ form.link.id_for_label }}" class="form-label">资源链接 <span class="text-danger">*</span></label>
+                            {{ form.link }}
+                            {% if form.link.errors %}
+                                <div class="text-danger">{{ form.link.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">请输入有效的URL地址，如：https://www.oracle.com/java/</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.start_time.id_for_label }}" class="form-label">开始时间</label>
+                            {{ form.start_time }}
+                            {% if form.start_time.errors %}
+                                <div class="text-danger">{{ form.start_time.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'chapter_manage' %}" class="btn btn-outline-secondary me-md-2">返回课时管理</a>
+                            <button type="submit" class="btn btn-success">上传资源</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 动态切换文件/链接字段 -->
+<script>
+    const resourceTypeSelect = document.querySelector('[name="resource_type"]');
+    const fileField = document.getElementById('file-field');
+    const linkField = document.getElementById('link-field');
+
+    // 初始切换
+    toggleFields(resourceTypeSelect.value);
+    
+    // 选择变化时切换
+    resourceTypeSelect.addEventListener('change', function() {
+        toggleFields(this.value);
+    });
+
+    function toggleFields(type) {
+        if (type === 'link') {
+            fileField.style.display = 'none';
+            linkField.style.display = 'block';
+        } else {
+            fileField.style.display = 'block';
+            linkField.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

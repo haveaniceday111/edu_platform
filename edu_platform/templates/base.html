@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}心晴研究所{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            {% if user.is_authenticated %}
+                {% if user.role == 'student' %}
+                    <a class="navbar-brand" href="{% url 'student_dashboard' %}">心晴研究所</a>
+                {% elif user.role == 'teacher' %}
+                    <a class="navbar-brand" href="{% url 'teacher_dashboard' %}">心晴研究所</a>
+                {% elif user.role == 'assistant' %}
+                    <a class="navbar-brand" href="{% url 'assistant_dashboard' %}">心晴研究所</a>
+                {% elif user.role == 'admin' %}
+                    <a class="navbar-brand" href="{% url 'admin_dashboard' %}">心晴研究所</a>
+                {% else %}
+                    <a class="navbar-brand" href="{% url 'student_dashboard' %}">心晴研究所</a>
+                {% endif %}
+            {% else %}
+                <a class="navbar-brand" href="{% url 'login' %}">心晴研究所</a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'resource_list' %}">课程资源库</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'activity_list' %}">活动管理</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            协作空间
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'discussion_list' %}">讨论区</a>
+                            <a class="dropdown-item" href="{% url 'meeting_record_list' %}">会议记录</a>
+                            <a class="dropdown-item" href="{% url 'achievement_list' %}">成果展示</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link">欢迎, {{ user.username }} ({{ user.get_role_display }})</span>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                               {% csrf_token %}
+                               <button type="submit" class="btn btn-link nav-link p-0">退出登录</button>
+                        </form>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+   
+<style>
+/* 全局生命教育浅绿色主题 */
+:root {
+    --main-color: #7CCD9F;          /* 温暖浅绿 */
+    --light-green: #F0F9F4;         /* 超柔和背景绿 */
+    --deep-green: #4A9B70;          /* 深一点的绿 */
+    --card-bg: #ffffff;             /* 卡片白色 */
+}
+
+/* 页面整体背景 */
+body {
+    background-color: var(--light-green);
+    font-family: "Microsoft YaHei", sans-serif;
+    color: #333;
+    line-height: 1.6;
+    background-image: url("{% static 'images/leaf-pattern.png' %}");
+    background-size: 300px;
+    background-repeat: repeat;
+    
+}
+
+/* 顶部导航栏 */
+.navbar {
+    background-color: var(--main-color) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* 导航文字颜色 */
+
+ .navbar .nav-link,
+.navbar .navbar-brand {
+    color: #2F5D47 !important;
+    font-weight: 500;
+}
+/* 卡片样式（生命教育风） */
+.card {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(120, 205, 159, 0.1);
+    background: var(--card-bg);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(to right, var(--main-color), #94D8B4);
+    color: white;
+    font-weight: bold;
+}
+
+/* 按钮绿色 */
+.btn-success {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+.btn-success:hover {
+    background-color: var(--deep-green);
+    border-color: var(--deep-green);
+}
+
+/* 标题风格 */
+h2, h3, h4 {
+    color: var(--deep-green);
+    font-weight: bold;
+}
+
+/* 页面小图标（绿植生命感） */
+.title-icon {
+    color: var(--main-color);
+    margin-right: 8px;
+}
+</style>
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

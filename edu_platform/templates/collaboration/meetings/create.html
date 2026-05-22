@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}创建会议记录 - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">创建会议记录</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">会议标题</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}">会议内容</label>
+                        {{ form.content }}
+                        <small class="form-text text-muted">请记录会议的主要内容、决议和待办事项。</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.meeting_date.id_for_label }}">会议时间</label>
+                        {{ form.meeting_date }}
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-success">创建记录</button>
+                        <a href="{% url 'meeting_record_list' %}" class="btn btn-secondary ml-2">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

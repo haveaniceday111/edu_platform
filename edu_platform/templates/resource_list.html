@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}心晴研究所-课程资源列表{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        {% if user_role == 'teacher' %}
+                            我的课程资源
+                        {% elif user_role == 'student' %}
+                            课程资源库
+                        {% else %}
+                            所有课程资源
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if chapters %}
+                        {% for chapter in chapters %}
+                            {% if chapter.resources.exists or user_role == 'teacher' %}
+                                <!-- 课时折叠面板 -->
+                                <div class="accordion mb-3" id="chapterAccordion{{ chapter.id }}">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading{{ chapter.id }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ chapter.id }}" aria-expanded="false" aria-controls="collapse{{ chapter.id }}">
+                                                <span class="me-2">{{ chapter.title }}</span>
+                                                <span class="badge bg-secondary">{{ chapter.resources.count }}个资源</span>
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ chapter.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ chapter.id }}" data-bs-parent="#chapterAccordion{{ chapter.id }}">
+                                            <div class="accordion-body">
+                                                <ul class="list-group list-group-flush">
+                                                    {% for resource in chapter.resources.all %}
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <div class="d-flex align-items-center">
+                                                                <!-- 资源类型图标 -->
+                                                                <i class="{{ resource.get_icon_class }} me-3"></i>
+                                                                <div>
+                                                                    <div>
+                                                                        <strong>{{ resource.title }}</strong>
+                                                                        <!-- 资源类型标签 -->
+                                                                        {{ resource.get_type_label|safe }}
+                                                                    </div>
+                                                                    {% if resource.start_time %}
+                                                                        <div class="text-muted small mt-1">
+                                                                            开始时间：{{ resource.start_time|date:"Y-m-d H:i" }}
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <!-- 查看/下载资源 -->
+                                                                <a href="{{ resource.get_resource_url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                                    {% if resource.resource_type == 'link' %}
+                                                                        访问链接
+                                                                    {% else %}
+                                                                        查看/下载
+                                                                    {% endif %}
+                                                                </a>
+                                                                {% if user_role == 'teacher' and user == resource.teacher %}
+                                                                <!-- 编辑资源 -->
+                                                                <a href="{% url 'resource_update' resource.pk %}" class="btn btn-sm btn-outline-warning">
+                                                                    编辑
+                                                                </a>
+                                                                <!-- 删除资源 -->
+                                                                <a href="{% url 'resource_delete' resource.pk %}" class="btn btn-sm btn-outline-danger">
+                                                                    删除
+                                                                </a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </li>
+                                                    {% empty %}
+                                                        <li class="list-group-item text-muted">
+                                                            该课时暂无资源
+                                                            {% if user_role == 'teacher' %}
+                                                            <a href="{% url 'resource_upload_chapter' chapter.id %}" class="btn btn-sm btn-success ml-2">上传资源</a>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            {% if user_role == 'teacher' %}
+                                暂无上传的资源，请先<a href="{% url 'chapter_manage' %}">创建课时并上传资源</a>！
+                            {% else %}
+                                暂无课程资源，请等待教师上传！
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if user_role == 'teacher' %}
+                        <a href="{% url 'chapter_manage' %}" class="btn btn-outline-success">管理课时/上传资源</a>
+                    {% endif %}
+                    {% if user.role == 'teacher' %}
+                        <a href="{% url 'teacher_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% elif user.role == 'assistant' %}
+                        <a href="{% url 'assistant_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% else %}
+                        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

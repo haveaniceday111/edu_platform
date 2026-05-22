@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ discussion.title }} - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- 主讨论内容 -->
+        <div class="card mb-4 {% if discussion.is_pinned %}border-warning{% endif %}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    {% if discussion.is_pinned %}
+                    <span class="badge badge-warning mr-2">置顶</span>
+                    {% endif %}
+                    <h4 class="mb-0 d-inline">{{ discussion.title }}</h4>
+                </div>
+                {% if user == discussion.creator or user.role == 'admin' %}
+                <div class="btn-group">
+                    <a href="{% url 'discussion_update' discussion.pk %}" class="btn btn-sm btn-outline-warning">编辑</a>
+                    <a href="{% url 'discussion_delete' discussion.pk %}" class="btn btn-sm btn-outline-danger">删除</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-3">
+                        <span class="badge badge-primary">{{ discussion.creator.get_role_display }}</span>
+                        <strong>{{ discussion.creator.username }}</strong>
+                    </div>
+                    <small class="text-muted">{{ discussion.created_at|date:"Y-m-d H:i" }}</small>
+                </div>
+                <div class="discussion-content" style="white-space: pre-wrap;">{{ discussion.content }}</div>
+            </div>
+        </div>
+
+        <!-- 回复列表 -->
+        <h5 class="mb-3">回复 ({{ replies.count }})</h5>
+        {% for reply in replies %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="mr-3">
+                        <span class="badge badge-secondary">{{ reply.author.get_role_display }}</span>
+                    <strong>{{ reply.author.username }}</strong>
+                    </div>
+                    <small class="text-muted">{{ reply.created_at|date:"Y-m-d H:i" }}</small>
+                </div>
+                <div class="reply-content" style="white-space: pre-wrap;">{{ reply.content }}</div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-light text-center">
+            暂无回复，成为第一个回复者吧！
+        </div>
+        {% endfor %}
+
+        <!-- 回复表单 -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">发表回复</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.content }}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">发表回复</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">讨论信息</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>发布者：</strong>{{ discussion.creator.username }}</p>
+                <p><strong>发布时间：</strong>{{ discussion.created_at|date:"Y-m-d H:i" }}</p>
+                <p><strong>最后更新：</strong>{{ discussion.updated_at|date:"Y-m-d H:i" }}</p>
+                <p><strong>回复数量：</strong>{{ replies.count }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">相关操作</h5>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'discussion_list' %}" class="btn btn-outline-primary btn-block mb-2">返回讨论列表</a>
+                <a href="{% url 'discussion_create' %}" class="btn btn-outline-success btn-block">发布新讨论</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

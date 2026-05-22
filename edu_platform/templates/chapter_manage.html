@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}心晴研究所-课时目录管理{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">课时目录管理</h4>
+                    <p class="mb-0 text-sm">请先编辑课时目录，再为每个课时上传资源</p>
+                </div>
+                <div class="card-body">
+                    <!-- 新增/编辑课时表单 -->
+                    <div class="mb-4 p-3 border rounded">
+                        <h5>新增/编辑课时</h5>
+                        <form method="post" class="row g-3">
+                            {% csrf_token %}
+                            <!-- 隐藏字段：编辑时传递chapter_id -->
+                            {{ form.id.as_hidden }}
+                            <div class="col-md-8">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">课时标题</label>
+                                {{ form.title }}
+                            </div>
+                            <div class="col-md-3">
+                                <label for="{{ form.order.id_for_label }}" class="form-label">排序号</label>
+                                {{ form.order }}
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="submit" class="btn btn-success w-100">保存</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 已有的课时列表 -->
+                    <h5>已创建的课时</h5>
+                    {% if chapters %}
+                        <div class="list-group">
+                            {% for chapter in chapters %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ chapter.title }}</strong>
+                                        <span class="text-muted ms-2">排序号：{{ chapter.order }}</span>
+                                    </div>
+                                    <div class="btn-group">
+                                        <!-- 编辑课时：回显数据（简化版，点击后填充表单） -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary edit-chapter" 
+                                                data-id="{{ chapter.id }}" 
+                                                data-title="{{ chapter.title }}" 
+                                                data-order="{{ chapter.order }}">
+                                            编辑
+                                        </button>
+                                        <!-- 为该课时上传资源 -->
+                                        <a href="{% url 'resource_upload_chapter' chapter.id %}" class="btn btn-sm btn-outline-success">
+                                            上传资源
+                                        </a>
+                                        <!-- 删除课时 -->
+                                        <a href="?delete={{ chapter.id }}" class="btn btn-sm btn-outline-danger" 
+                                           onclick="return confirm('确定删除该课时吗？删除后该课时下的所有资源也会被删除！')">
+                                            删除
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">暂无课时，请先创建！</div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if user.role == 'teacher' %}
+                        <a href="{% url 'teacher_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% elif user.role == 'assistant' %}
+                        <a href="{% url 'assistant_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% else %}
+                        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">返回仪表盘</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑课时的JS：填充表单 -->
+<script>
+    document.querySelectorAll('.edit-chapter').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const chapterId = this.getAttribute('data-id');
+            const chapterTitle = this.getAttribute('data-title');
+            const chapterOrder = this.getAttribute('data-order');
+            
+            // 填充表单
+            document.querySelector('[name="title"]').value = chapterTitle;
+            document.querySelector('[name="order"]').value = chapterOrder;
+            
+            // 添加隐藏的chapter_id字段（如果没有）
+            let hiddenInput = document.querySelector('[name="chapter_id"]');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'chapter_id';
+                document.querySelector('form').appendChild(hiddenInput);
+            }
+            hiddenInput.value = chapterId;
+            
+            // 滚动到表单
+            document.querySelector('.mb-4').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+{% endblock %}

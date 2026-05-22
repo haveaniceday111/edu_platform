@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}发布讨论 - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">发布新讨论</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">讨论标题</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}">讨论内容</label>
+                        {{ form.content }}
+                        <small class="form-text text-muted">请详细描述您想讨论的问题或话题。</small>
+                    </div>
+                    {% if user.role == 'teacher' or user.role == 'admin' %}
+                    <div class="form-group form-check">
+                        {{ form.is_pinned }}
+                        <label class="form-check-label" for="{{ form.is_pinned.id_for_label }}">置顶此讨论</label>
+                    </div>
+                    {% endif %}
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-success">发布讨论</button>
+                        <a href="{% url 'discussion_list' %}" class="btn btn-secondary ml-2">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

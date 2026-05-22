@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}心晴研究所-编辑资源{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">编辑资源</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.chapter.id_for_label }}">所属课时</label>
+                        {{ form.chapter }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">资源名称</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.resource_type.id_for_label }}">资源类型</label>
+                        {{ form.resource_type }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.file.id_for_label }}">上传文件</label>
+                        {{ form.file }}
+                        {% if resource.file %}
+                        <p class="text-muted small mt-1">当前文件：{{ resource.file.name }}</p>
+                        {% endif %}
+                        <small class="form-text text-muted">文件类资源必填，上传新文件将替换原有文件。</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.link.id_for_label }}">资源链接</label>
+                        {{ form.link }}
+                        <small class="form-text text-muted">链接类资源必填。</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.start_time.id_for_label }}">开始时间</label>
+                        {{ form.start_time }}
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-warning">保存修改</button>
+                        <a href="{% url 'resource_list' %}" class="btn btn-secondary ml-2">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

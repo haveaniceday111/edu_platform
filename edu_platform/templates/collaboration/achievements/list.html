@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}成果展示 - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>成果展示</h2>
+    <a href="{% url 'achievement_create' %}" class="btn btn-success">分享新成果</a>
+</div>
+
+<div class="row">
+    {% for achievement in achievements %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ achievement.title }}</h5>
+                <span class="badge badge-info">{{ achievement.creator.get_role_display }}</span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ achievement.content|truncatewords:50 }}</p>
+                {% if achievement.file %}
+                <div class="mt-3">
+                    <a href="{{ achievement.file.url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                        <i class="bi bi-download"></i> 下载附件
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer text-muted small">
+                <div class="d-flex justify-content-between">
+                    <span><strong>创建者：</strong>{{ achievement.creator.username }}</span>
+                    <span>{{ achievement.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            暂无成果展示，点击右上角按钮分享您的成果。
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %} 心晴研究所 {% endblock %}
+
+{% block content %}
+<h2>🌱欢迎来到心晴研究所·{{ user.get_role_display }}中心</h2>
+<div class="row mt-4">
+    {% if user.role == 'teacher' %}
+    <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">我的课程资源</h5>
+                    <p class="card-text">已上传 {{ resource_count }} 个资源</p>
+                    <a href="{% url 'resource_list' %}" class="btn btn-primary">查看资源</a>
+                    {% if role == 'teacher' %}
+                        <a href="{% url 'chapter_manage' %}" class="btn btn-success ms-2">上传新资源</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">我的活动</h5>
+                <p class="card-text">已创建 {{ my_activities.count }} 个活动</p>
+                <a href="{% url 'activity_list' %}" class="btn btn-primary">查看活动</a>
+                <a href="{% url 'activity_create' %}" class="btn btn-success ml-2">创建新活动</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">我的讨论</h5>
+                <p class="card-text">已发布 {{ my_discussions.count }} 个讨论</p>
+                <a href="{% url 'discussion_list' %}" class="btn btn-primary">查看讨论</a>
+                <a href="{% url 'discussion_create' %}" class="btn btn-success ml-2">发布新讨论</a>
+            </div>
+        </div>
+    </div>
+
+    {% elif user.role == 'student' %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">课程资源库</h5>
+                <p class="card-text">共有 {{ resource_count }} 个学习资源</p>
+                <a href="{% url 'resource_list' %}" class="btn btn-primary">浏览资源</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">正在进行的活动</h5>
+                <p class="card-text">共有 {{ active_activities.count }} 个活动</p>
+                <a href="{% url 'activity_list' %}" class="btn btn-primary">查看活动</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">协作讨论区</h5>
+                <p class="card-text">共有 {{ discussion_count }} 个讨论</p>
+                <a href="{% url 'discussion_list' %}" class="btn btn-primary">参与讨论</a>
+            </div>
+        </div>
+    </div>
+
+    {% elif user.role == 'admin' %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">活动管理</h5>
+                <p class="card-text">共有 {{ activity_count }} 个活动</p>
+                <a href="{% url 'activity_list' %}" class="btn btn-primary">管理活动</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">协作空间</h5>
+                <p class="card-text">共有 {{ discussion_count }} 个讨论</p>
+                <a href="{% url 'discussion_list' %}" class="btn btn-primary">管理讨论</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">用户管理</h5>
+                <p class="card-text">共有 {{ user_count }} 个用户</p>
+                <a href="/admin/core/user/" class="btn btn-primary">后台管理用户</a>
+            </div>
+        </div>
+    </div>
+    
+    {% elif user.role == 'assistant' %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">课程资源库</h5>
+                <p class="card-text">共有 {{ resource_count }} 个学习资源</p>
+                <a href="{% url 'resource_list' %}" class="btn btn-primary">浏览资源</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">活动管理</h5>
+                <p class="card-text">共有 {{ all_activities.count }} 个活动</p>
+                <a href="{% url 'activity_list' %}" class="btn btn-primary">管理活动</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">协作空间</h5>
+                <p class="card-text">共有 {{ discussion_count }} 个讨论</p>
+                <a href="{% url 'discussion_list' %}" class="btn btn-primary">管理讨论</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

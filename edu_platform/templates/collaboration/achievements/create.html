@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}分享成果 - 教育协作平台{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">分享新成果</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">成果标题</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}">成果描述</label>
+                        {{ form.content }}
+                        <small class="form-text text-muted">请详细描述您的成果内容、创新点和应用价值。</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.file.id_for_label }}">成果附件</label>
+                        {{ form.file }}
+                        <small class="form-text text-muted">可上传相关文档、图片或其他文件（可选）。</small>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-success">分享成果</button>
+                        <a href="{% url 'achievement_list' %}" class="btn btn-secondary ml-2">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
